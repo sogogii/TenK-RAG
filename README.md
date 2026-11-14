@@ -50,6 +50,10 @@ pip install -r requirements.txt
 
 _In progress._
 
+## Data Notes
+
+- **XOM:** The ticker now maps to ExxonMobil Holdings Corp (CIK 2115436), which has not filed a 10-K yet. The latest 10-K is retrieved from the prior registrant, Exxon Mobil Corp (CIK 34088).
+
 ## Roadmap
 
 - [ ] Week 1: Environment setup, data collection pipeline
