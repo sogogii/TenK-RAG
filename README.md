@@ -44,6 +44,21 @@ TenK-RAG/
 python3.12 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+pip install -e .
+```
+
+The SEC requires a User-Agent with your name and email:
+
+```bash
+export SEC_USER_AGENT="Your Name you@example.com"
+```
+
+## Usage
+
+Download the latest 10-K for each company:
+
+```bash
+python -m tenk_rag.collect
 ```
 
 ## Results
@@ -56,7 +71,7 @@ _In progress._
 
 ## Roadmap
 
-- [ ] Week 1: Environment setup, data collection pipeline
+- [x] Week 1: Environment setup, data collection pipeline
 - [ ] Week 2: End-to-end baseline RAG with citations
 - [ ] Week 3: Evaluation framework and baseline scores
 - [ ] Week 4: Comparative experiments
