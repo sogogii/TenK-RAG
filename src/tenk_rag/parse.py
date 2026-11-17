@@ -18,6 +18,7 @@ NUMBER = re.compile(r"^\(?-?[\d,]*\.?\d+\)?%?$")  # e.g. 6,617 / 39.3% / (321)
 YEAR = re.compile(r"^(19|20)\d{2}$")              # e.g. 2026
 TABLE_MARKER = re.compile(r"\[\[TABLE_(\d+)\]\]")  # placeholder left where a table was
 BLOCK_TAGS = ["div", "p", "br", "li", "h1", "h2", "h3", "h4"]  # tags that end a paragraph
+PAGE_FOOTER = re.compile(r"Form 10-K\s+([ivxlc]+|\d{1,3})$", re.IGNORECASE)   # e.g. "Prizer Inc. 2025 Form 10-K 12"
 
 
 ### Table parsing 
@@ -42,23 +43,29 @@ def is_section(row):
 	return len(row) == 1 and row[0].endswith(":")
 
 
+def has_amounts(row):
+	"""True if any value cell (after the label) holds an amount; years don't count."""
+	return any(NUMBER.match(c) and not YEAR.match(c) for c in row[1:])
+
+
 def looks_like_header(row):
-	"""True if no value cell holds an amount (years are allowed)."""
-	return not any(NUMBER.match(c) and not YEAR.match(c) for c in row[1:])
+    """A row with no amounts can be a header, e.g. 'Periods | Shares | Price'."""
+    return not has_amounts(row)
 
 
-def table_to_markdown(table):
-	"""Convert an HTML table into a markdown table string ('' if the table is empty)."""
+def table_rows(table):
+	"""Extract cleaned rows from an HTML table."""
 	rows = []
 	for tr in table.find_all("tr"):
 		cells = [td.get_text(" ", strip=True) for td in tr.find_all(["td", "th"])]
 		row = clean_row(cells)
 		if row:
 			rows.append(row)
+	return rows
 
-	if not rows:   # layout-only table with no text
-		return ""
 
+def table_to_markdown(rows):
+	"""Convert cleaned table rows into a markdown table string."""
 	width = max(len(r) for r in rows)   # data rows (label + values) are the widest
 	n_cols = width - 1   # value columns, excluding the label column
 
@@ -117,15 +124,26 @@ def parse_10k(html, context_lines=2):
 	for tag in soup.find_all(style=lambda s: s and "display:none" in s.replace(" ", "")):
 		tag.decompose()
 
-	# Replace each table with a marker so its position in the text is kept
+	# Classify each table: drop, turn into text, or keep as a markdown table
 	tables_md = []
 	for table in soup.find_all("table"):
-		md = table_to_markdown(table)
-		if md:
-			table.replace_with(f"\n[[TABLE_{len(tables_md)}]]")
-			tables_md.append(md)
-		else:
+		rows = table_rows(table)
+
+		if not rows:   # layout-only table with no text
 			table.decompose()
+			continue
+
+		if len(rows) == 1:   # one-row "tables" are often not data
+			line = " ".join(rows[0])
+			if PAGE_FOOTER.search(line):   # e.g. "Pfizer Inc. 2025 Form 10-K 12"
+				table.decompose()
+				continue
+			if not has_amounts(rows[0]):   # headings, cover-page lines, checkboxes
+				table.replace_with(f"\n{line}\n")
+				continue
+
+		table.replace_with(f"\n[[TABLE_{len(tables_md)}]]\n")
+		tables_md.append(table_to_markdown(rows))
 
 	# Break lines only at paragraph ends, so inline <span>s stay in one sentence
 	for tag in soup.find_all(BLOCK_TAGS):
