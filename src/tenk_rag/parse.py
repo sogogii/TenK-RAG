@@ -20,8 +20,8 @@ TABLE_MARKER = re.compile(r"\[\[TABLE_(\d+)\]\]")  # placeholder left where a ta
 BLOCK_TAGS = ["div", "p", "br", "li", "h1", "h2", "h3", "h4"]  # tags that end a paragraph
 # (A|B) matches either phrase. New footer formats can be added with another |
 PAGE_FOOTER = re.compile(
-    r"(Form 10-K|Annual Report)\s+([ivxlc]+|\d{1,3})$", re.IGNORECASE
-)  # e.g. "Pfizer Inc. 2025 Form 10-K 12", "2025 Annual Report 3"
+    r"(Form 10-K|Annual Report)\s*\|?\s*([ivxlc]+|\d{1,3})$", re.IGNORECASE
+)  # e.g. "Pfizer Inc. 2025 Form 10-K 12", "Apple Inc. | 2026 Form 10-K | 43"
 
 
 ### Table parsing 
@@ -164,7 +164,7 @@ def parse_10k(html, context_lines=2):
 		tag.append("\n")
 	body = soup.body or soup   # skip <head>, e.g. the <title> text
 	lines = [re.sub(r"\s+", " ", line).strip() for line in body.get_text().splitlines()]
-	lines = [line for line in lines if line]
+	lines = [line for line in lines if line and not PAGE_FOOTER.search(line)]
 
 	# Walk lines in order: text accumulates until a table marker appears
 	blocks = []
