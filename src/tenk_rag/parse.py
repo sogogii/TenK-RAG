@@ -18,7 +18,10 @@ NUMBER = re.compile(r"^\(?-?[\d,]*\.?\d+\)?%?$")  # e.g. 6,617 / 39.3% / (321)
 YEAR = re.compile(r"^(19|20)\d{2}$")              # e.g. 2026
 TABLE_MARKER = re.compile(r"\[\[TABLE_(\d+)\]\]")  # placeholder left where a table was
 BLOCK_TAGS = ["div", "p", "br", "li", "h1", "h2", "h3", "h4"]  # tags that end a paragraph
-PAGE_FOOTER = re.compile(r"Form 10-K\s+([ivxlc]+|\d{1,3})$", re.IGNORECASE)   # e.g. "Prizer Inc. 2025 Form 10-K 12"
+# (A|B) matches either phrase. New footer formats can be added with another |
+PAGE_FOOTER = re.compile(
+    r"(Form 10-K|Annual Report)\s+([ivxlc]+|\d{1,3})$", re.IGNORECASE
+)  # e.g. "Pfizer Inc. 2025 Form 10-K 12", "2025 Annual Report 3"
 
 
 ### Table parsing 
@@ -62,6 +65,13 @@ def table_rows(table):
 		if row:
 			rows.append(row)
 	return rows
+
+
+def pop_caption(rows):
+	"""Remove and return a long single-cell first row: a table title, not data."""
+	if rows and len(rows[0]) == 1 and len(rows[0][0]) > 40:
+		return rows.pop(0)[0]
+	return ""
 
 
 def table_to_markdown(rows):
@@ -125,25 +135,29 @@ def parse_10k(html, context_lines=2):
 		tag.decompose()
 
 	# Classify each table: drop, turn into text, or keep as a markdown table
-	tables_md = []
+	tables = []   # (caption, markdown) paris
 	for table in soup.find_all("table"):
 		rows = table_rows(table)
+		caption = pop_caption(rows)   # a title row, if any, is moved out first
 
-		if not rows:   # layout-only table with no text
-			table.decompose()
+		if not rows:
+			if caption:   # the "table" was only a title
+				table.replace_with(f"\n{caption}\n")
+			else:   # layout-only table with no text
+				table.decompose()
 			continue
 
 		if len(rows) == 1:   # one-row "tables" are often not data
 			line = " ".join(rows[0])
-			if PAGE_FOOTER.search(line):   # e.g. "Pfizer Inc. 2025 Form 10-K 12"
+			if PAGE_FOOTER.search(line):
 				table.decompose()
 				continue
-			if not has_amounts(rows[0]):   # headings, cover-page lines, checkboxes
-				table.replace_with(f"\n{line}\n")
+			if not has_amounts(rows[0]):
+				table.replace_with(f"\n{caption}\n{line}\n")
 				continue
 
-		table.replace_with(f"\n[[TABLE_{len(tables_md)}]]\n")
-		tables_md.append(table_to_markdown(rows))
+		table.replace_with(f"\n[[TABLE_{len(tables)}]]\n")
+		tables.append((caption, table_to_markdown(rows)))
 
 	# Break lines only at paragraph ends, so inline <span>s stay in one sentence
 	for tag in soup.find_all(BLOCK_TAGS):
@@ -162,10 +176,12 @@ def parse_10k(html, context_lines=2):
 			if buffer:
 				blocks.append({"type": "text", "content": "\n".join(buffer)})
 				buffer = []
+			caption, md = tables[int(m.group(1))]
+			context = recent[-context_lines:] + ([caption] if caption else [])
 			blocks.append({
 				"type": "table",
-				"context": " ".join(recent[-context_lines:]),
-				"content": tables_md[int(m.group(1))],
+				"context": " ".join(context),
+				"content": md
 			})
 		else:
 			buffer.append(line)

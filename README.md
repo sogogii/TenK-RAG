@@ -69,6 +69,14 @@ _In progress._
 
 - **XOM:** The ticker now maps to ExxonMobil Holdings Corp (CIK 2115436), which has not filed a 10-K yet. The latest 10-K is retrieved from the prior registrant, Exxon Mobil Corp (CIK 34088).
 
+### Parser Limitations
+
+- **Multi-level headers:** Headers spanning several columns (HTML `colspan`) are not aligned, e.g. PFE's revenue-by-geography table with Worldwide / U.S. / International groups.
+- **Short table titles:** A title row shorter than 40 characters (e.g. "Costs and expenses follow:") is treated as a section label and prefixed to every row.
+- **Unit labels in header rows:** A header row whose first cell is a unit, like "(MILLIONS) | 2025 | 2024", is parsed as a data row.
+
+After these fixes, at most 7% of tables per company lack a detected header (see `notebooks/05_parse_check.ipynb`).
+
 ## Roadmap
 
 - [x] Week 1: Environment setup, data collection pipeline
