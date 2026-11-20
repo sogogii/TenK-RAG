@@ -4,6 +4,7 @@ import json
 import re
 import warnings
 from pathlib import Path
+from collections import Counter
 
 from bs4 import BeautifulSoup, XMLParsedAsHTMLWarning
 
@@ -22,9 +23,38 @@ BLOCK_TAGS = ["div", "p", "br", "li", "h1", "h2", "h3", "h4"]  # tags that end a
 PAGE_FOOTER = re.compile(
     r"(Form 10-K|Annual Report)\s*\|?\s*([ivxlc]+|\d{1,3})$", re.IGNORECASE
 )  # e.g. "Pfizer Inc. 2025 Form 10-K 12", "Apple Inc. | 2026 Form 10-K | 43"
+MAX_HEADER_WORDS = 40    # real column headers are short; longer rows are prose
 
 
 ### Table parsing 
+
+def row_words(row):
+	"""Total number of words across a row's cells."""
+	return sum(len(c.split()) for c in row)
+
+
+def drop_page_furniture(lines, min_count=10, max_words=6):
+	"""Remove page headers and footers.
+	
+	They are short lines that become identical once page numbers are removed,
+	e.g. "52 Table of Contents" and "76 Tble of Contents", or "69 Bank of America".
+	"""
+	def strip_numbers(line):
+		return re.sub(r"\d+", "", line).strip(" |")
+
+	counts = Counter(strip_numbers(line) for line in lines)
+	return [
+		line for line in lines
+		if TABLE_MARKER.fullmatch(line)   # never drop table placeholders
+		or not (
+			# Drops lines that are at most six words and repeat at least ten times.
+			# Both conditions are needed: length alone would remove real headings,
+			# and frequency alone could remove repeated sentences.
+			len(strip_numbers(line).split()) <= max_words
+			and counts[strip_numbers(line)] >= min_count
+		)
+	]
+
 
 def clean_row(cells):
 	"""Drop empty and '$' cells, and attch stray '%' or ')' to the previous cell."""
@@ -82,7 +112,12 @@ def table_to_markdown(rows):
 	# Header rule 1: leading rows without a label cell are shorter than data rows
 	header = [""] * n_cols
 	corner = ""
-	while rows and len(rows[0]) < width and not is_section(rows[0]):
+	while (
+		rows
+		and len(rows[0]) < width
+		and not is_section(rows[0])
+		and row_words(rows[0]) <= MAX_HEADER_WORDS   # prose is not a header
+	):
 		hr = rows.pop(0)
 		if len(hr) == 1:   # a title spanning all columns, e.g. "Years Ended"
 			hr = hr * n_cols
@@ -95,6 +130,7 @@ def table_to_markdown(rows):
 		and len(rows) > 1
 		and not is_section(rows[0])
 		and looks_like_header(rows[0])
+		and row_words(rows[0]) <= MAX_HEADER_WORDS
 	):
 		hr = rows.pop(0)
 		corner = hr[0]
@@ -165,6 +201,7 @@ def parse_10k(html, context_lines=2):
 	body = soup.body or soup   # skip <head>, e.g. the <title> text
 	lines = [re.sub(r"\s+", " ", line).strip() for line in body.get_text().splitlines()]
 	lines = [line for line in lines if line and not PAGE_FOOTER.search(line)]
+	lines = drop_page_furniture(lines)   # headers/footers in any format
 
 	# Walk lines in order: text accumulates until a table marker appears
 	blocks = []

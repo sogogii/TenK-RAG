@@ -43,6 +43,10 @@ def chunk_table(block, max_words=MAX_WORDS):
 	context = " ".join(block["context"].split()[-MAX_CONTEXT_WORDS:])
 	prefix = [context] + header
 
+	# Fallback: if the prefix or any row is too long, this is prose laid out as a table
+	if n_words("\n".join(prefix)) > max_words // 2 or any(n_words(r) > max_words for r in rows):
+		return chunk_text(block["context"] + " " + block["content"].replace("|", " "))
+
 	chunks = []
 	current = []
 	for row in rows:
