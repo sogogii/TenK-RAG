@@ -3,6 +3,7 @@
 import json
 import statistics
 from pathlib import Path
+from transformers import AutoTokenizer
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
@@ -13,10 +14,19 @@ MAX_WORDS = 150   # numbers use extra tokens, so stay well under the model's 256
 OVERLAP_WORDS = 30   # words shared between consecutive text chunks
 MAX_CONTEXT_WORDS = 40   # table context kept closest to the table (often holds years and units)
 
+MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
+TOKENIZER = AutoTokenizer.from_pretrained(MODEL_NAME)   # loads the same tokenizer the embedding model uses
+MAX_TOKENS = 250   # model reads 256 tokens, including 2 special tokens
+
 
 def n_words(text):
 	"""Count words, ignoring markdown table symbols."""
 	return sum(1 for w in text.split() if w not in ("|", "---"))
+
+
+def n_tokens(text):
+	"""Count tokens the way the embedding model does."""
+	return len(TOKENIZER.tokenize(text)) + 2   # +2 for the [CLS] and [SEP] tokens
 
 
 def chunk_text(text, max_words=MAX_WORDS, overlap=OVERLAP_WORDS):
@@ -33,25 +43,25 @@ def chunk_text(text, max_words=MAX_WORDS, overlap=OVERLAP_WORDS):
 	return chunks
 
 
-def chunk_table(block, max_words=MAX_WORDS):
+def chunk_table(block, max_tokens=MAX_TOKENS):
 	"""Split a table by rows, repeating its context and header in every chunk.
 	
-	This keeps every number next to its year and unit, even after splitting.
+	Sizes are measured in model tokens, since pipes and numbers use many tokens.
 	"""
 	lines = block["content"].splitlines()
 	header, rows = lines[:2], lines[2:]   # header line + separator, then data rows
 	context = " ".join(block["context"].split()[-MAX_CONTEXT_WORDS:])
 	prefix = [context] + header
 
-	# Fallback: if the prefix or any row is too long, this is prose laid out as a table
-	if n_words("\n".join(prefix)) > max_words // 2 or any(n_words(r) > max_words for r in rows):
+	# Fallback: prose laid out as a table
+	if n_tokens("\n".join(prefix)) > max_tokens // 2 or any(n_tokens(r) > max_tokens for r in rows):
 		return chunk_text(block["context"] + " " + block["content"].replace("|", " "))
 
 	chunks = []
 	current = []
 	for row in rows:
 		candidate = current + [row]
-		if current and n_words("\n".join(prefix + candidate)) > max_words:
+		if current and n_tokens("\n".join(prefix + candidate)) > max_tokens:
 			chunks.append("\n".join(prefix + current))
 			current = [row]
 		else:
