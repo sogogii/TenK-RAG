@@ -58,7 +58,11 @@ export SEC_USER_AGENT="Your Name you@example.com"
 Download the latest 10-K for each company:
 
 ```bash
-python -m tenk_rag.collect
+python -m tenk_rag.collect   # download the latest 10-K for each company
+python -m tenk_rag.parse     # split filings into text and table blocks
+python -m tenk_rag.chunk     # split blocks into retrieval-sized chunks
+python -m tenk_rag.embed     # embed all chunks
+python -m tenk_rag.search AAPL "What were Apple's total net sales in 2026?"
 ```
 
 ## Results
