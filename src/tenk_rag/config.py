@@ -1,0 +1,13 @@
+"""Shared paths and settings used across the pipeline."""
+
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DATA_DIR = PROJECT_ROOT / "data"
+
+CHUNKS_PATH = DATA_DIR / "chunks.jsonl"
+EMBEDDINGS_PATH = DATA_DIR / "embeddings.npy"
+EMBED_META_PATH = DATA_DIR / "embeddings_meta.json"
+
+# Chunks sizes depends on this model's tokenizer, so changing it means re-chunking
+EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"

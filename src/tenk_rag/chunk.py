@@ -4,18 +4,17 @@ import json
 import statistics
 from pathlib import Path
 from transformers import AutoTokenizer
+from tenk_rag.config import CHUNKS_PATH, EMBED_MODEL
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
-# Saves all companies' chunks to a single file, since the embedding step processes them all together
-CHUNKS_PATH = PROJECT_ROOT / "data" / "chunks.jsonl"
 
 MAX_WORDS = 150   # numbers use extra tokens, so stay well under the model's 256-token limit
 OVERLAP_WORDS = 30   # words shared between consecutive text chunks
 MAX_CONTEXT_WORDS = 40   # table context kept closest to the table (often holds years and units)
 
-MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-TOKENIZER = AutoTokenizer.from_pretrained(MODEL_NAME)   # loads the same tokenizer the embedding model uses
+TOKENIZER = AutoTokenizer.from_pretrained(EMBED_MODEL)   # loads the same tokenizer the embedding model uses
 MAX_TOKENS = 250   # model reads 256 tokens, including 2 special tokens
 
 

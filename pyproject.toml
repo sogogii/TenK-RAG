@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "tenk-rag"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = ["requests", "beautifulsoup4", "lxml", "transformers]
+dependencies = ["requests", "beautifulsoup4", "lxml", "transformers", "sentence-transformers", "numpy", "torch"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
