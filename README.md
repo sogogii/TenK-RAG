@@ -78,6 +78,7 @@ _In progress._
 - **Multi-level headers:** Headers spanning several columns (HTML `colspan`) are not aligned, e.g. PFE's revenue-by-geography table with Worldwide / U.S. / International groups.
 - **Short table titles:** A title row shorter than 40 characters (e.g. "Costs and expenses follow:") is treated as a section label and prefixed to every row.
 - **Unit labels in header rows:** A header row whose first cell is a unit, like "(MILLIONS) | 2025 | 2024", is parsed as a data row.
+- **Section labels without a closing total:** A section label (e.g. "Denominator:") carries over to later rows when no "Total" row ends the section, producing labels like "Denominator - Diluted earnings per share".
 
 After these fixes, at most 7% of tables per company lack a detected header (see `notebooks/05_parse_check.ipynb`).
 
