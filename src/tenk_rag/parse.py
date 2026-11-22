@@ -20,6 +20,7 @@ YEAR = re.compile(r"^(19|20)\d{2}$")              # e.g. 2026
 TABLE_MARKER = re.compile(r"\[\[TABLE_(\d+)\]\]")  # placeholder left where a table was
 FOOTNOTE = re.compile(r"^\([a-z]\)$")  # standalone note markers, e.g. "(a)", "(g)"
 UNIT_LABEL = re.compile(r"\b(millions|thousands|billions)\b", re.IGNORECASE)  # e.g. "(Dollars in millions)", "$ in millions"
+YEARISH = re.compile(r"\b(19|20)\d{2}\b")  # a cell that mentions a year, e.g. "2026", "December 2025"
 BLOCK_TAGS = ["div", "p", "br", "li", "h1", "h2", "h3", "h4"]  # tags that end a paragraph
 # (A|B) matches either phrase. New footer formats can be added with another |
 PAGE_FOOTER = re.compile(
@@ -139,19 +140,23 @@ def table_to_markdown(rows):
 		header = hr[1:] + [""] * (n_cols - len(hr[1:]))
 
 	# Header rule 3: a units row like "$ in millions | 2025 | 2024" holds the real column names
+	first = rows[0] if rows else []
 	if (
 		len(rows) > 1
-		and len(rows[0]) > 1
-		and UNIT_LABEL.search(rows[0][0])
-		and looks_like_header(rows[0])
+		and len(first) > 1
+		and looks_like_header(first)
+		# Treats a row as the header when every value cell mentions a year
+		and (UNIT_LABEL.search(first[0]) or all(YEARISH.search(c) for c in first[1:]))
 	):
 		hr = rows.pop(0)
 		values = hr[1:] + [""] * (n_cols - len(hr[1:]))
-		if all(header):   # rule 1 found one name per column, e.g. "Year Ended December"
+		named = [h for h in header if h]
+		# A different name per column: merge with the years
+		if all(header) and len(set(named)) > 1:
 			header = [f"{h} {v}".strip() for h, v in zip(header, values)]
 			corner = hr[0]
-		else:   # rule 1 took a table title, e.g. "Table 6 Selected Annual Financial Data"
-			title = " ".join(h for h in header if h)
+		else:   # a title, or one label spanning every column
+			title = " ".join(dict.fromkeys(named))
 			corner = " ".join(x for x in (title, hr[0]) if x)
 			header = values
 

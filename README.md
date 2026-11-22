@@ -68,13 +68,32 @@ python -m tenk_rag.answer AAPL "What was diluted earnings per share in 2025?"
 
 ## Results
 
-**Hypothesis rejected:** Removing the company name from the BAC query removed name-matching debt chunks
-from the top 5, but the correct tables still ranked outside the top 10.
-The company name adds noise but is not the main cause of BAC misses.
+### Preliminary Findings
 
-**Energy questions (XOM, CVX):** All evidence strings exist in the chunks, so every miss is a true retrieval failure.
-xom-01 and xom-02 reuse the table's exact row labels but still rank outside the top 50,
-while narrative text about the same topics ranks higher. These are candidates for keyword (BM25) retrieval.
+_Based on 29 retrieval questions across 6 companies (AAPL, JPM, BAC, GS, XOM, CVX). The evaluation set is still growing, so these numbers will change._
+
+Baseline: `all-MiniLM-L6-v2` embeddings, 150-word text chunks, token-limited table chunks, top-k cosine similarity within one company.
+
+| Metric    | Score |
+| --------- | ----- |
+| Recall@5  | 0.31  |
+| Recall@10 | 0.52  |
+| Recall@50 | 0.86  |
+
+**1. Retrieval, not generation, is the bottleneck.** When the correct chunk is retrieved, the LLM reads the right year column and cites it. When it is not, the LLM correctly answers that the sources lack the information instead of guessing.
+
+**2. Tables lose to narrative text.** For table questions, the top results are often MD&A paragraphs about the same topic, while the table holding the exact number ranks lower.
+
+**3. Paraphrased questions rarely find tables.** Questions reusing a table's row labels reach Recall@5 of about 50%, but paraphrased questions (e.g. "profit kept after all costs and taxes" instead of "net income") found the table in only 1 of 8 cases.
+
+**4. Most misses are near misses.** The correct chunk is in the top 50 for 86% of questions, so reranking the top 50 could raise Recall@5 substantially.
+
+**5. Some misses are deep.** For XOM revenue and R&D, the questions use the table's exact row labels, yet the correct chunks rank outside the top 50. These are candidates for keyword (BM25) retrieval.
+
+**6. Rejected hypotheses.**
+
+- _Truncation:_ Measuring table chunks in model tokens cut tables over the 256-token limit from 36% to 5%, but retrieval barely changed.
+- _Company name in the query:_ Removing "Bank of America" from a BAC query removed name-matching chunks, but the correct tables still ranked outside the top 10.
 
 ## Data Notes
 

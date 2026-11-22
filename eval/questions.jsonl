@@ -29,3 +29,6 @@
 {"id": "cvx-01", "ticker": "CVX", "category": "lookup", "question": "What were Chevron's sales and other operating revenues in 2025?", "answer": "184,432", "evidence": ["Sales and Other Operating Revenues", "184,432"]}
 {"id": "cvx-02", "ticker": "CVX", "category": "lookup", "question": "What were Chevron's total upstream earnings in 2024?", "answer": "18,602", "evidence": ["Total Upstream", "18,602"]}
 {"id": "cvx-03", "ticker": "CVX", "category": "paraphrase", "question": "How much profit did Chevron earn for its shareholders after all costs and taxes in 2025?", "answer": "12,299", "evidence": ["Net Income", "12,299"]}
+{"id": "msft-01", "ticker": "MSFT", "category": "lookup", "question": "What was Microsoft's total revenue in fiscal 2025?", "answer": "281,724", "evidence": ["Total revenue", "281,724"]}
+{"id": "msft-02", "ticker": "MSFT", "category": "lookup", "question": "What was Microsoft's operating income in fiscal 2026?", "answer": "155,237", "evidence": ["Operating income", "155,237"]}
+{"id": "msft-03", "ticker": "MSFT", "category": "paraphrase", "question": "How much did Microsoft invest in developing new technology and products in fiscal 2024?", "answer": "29,510", "evidence": ["Research and development", "29,510"]}
