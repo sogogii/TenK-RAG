@@ -13,3 +13,7 @@
 {"id": "aapl-13", "ticker": "AAPL", "category": "calculation", "question": "By what percentage did Apple's total net sales grow from fiscal 2025 to fiscal 2026?", "answer": "15%", "evidence": ["478,834", "416,161"]}
 {"id": "aapl-14", "ticker": "AAPL", "category": "no_answer", "question": "How much revenue did Apple earn from self-driving cars in fiscal 2026?", "answer": null, "evidence": []}
 {"id": "aapl-15", "ticker": "AAPL", "category": "no_answer", "question": "What revenue target did Apple set for fiscal 2030?", "answer": null, "evidence": []}
+{"id": "jpm-01", "ticker": "JPM", "category": "lookup", "question": "What was JPMorgan Chase's net interest income in 2025?", "answer": "95,443", "evidence": ["Net interest income", "95,443"]}
+{"id": "jpm-02", "ticker": "JPM", "category": "lookup", "question": "What was JPMorgan Chase's provision for credit losses in 2024?", "answer": "10,678", "evidence": ["Provision for credit losses", "10,678"]}
+{"id": "jpm-03", "ticker": "JPM", "category": "paraphrase", "question": "How much money did JPMorgan Chase bring in across all of its businesses in 2025?", "answer": "182,447", "evidence": ["Total net revenue", "182,447"]}
+{"id": "jpm-04", "ticker": "JPM", "category": "lookup", "question": "What was JPMorgan Chase's diluted earnings per share in 2025?", "answer": "20.02", "evidence": ["Diluted", "20.02"]}

@@ -18,6 +18,7 @@ PROCESSED_DIR = PROJECT_ROOT / "data" / "processed"
 NUMBER = re.compile(r"^\(?-?[\d,]*\.?\d+\)?%?$")  # e.g. 6,617 / 39.3% / (321)
 YEAR = re.compile(r"^(19|20)\d{2}$")              # e.g. 2026
 TABLE_MARKER = re.compile(r"\[\[TABLE_(\d+)\]\]")  # placeholder left where a table was
+FOOTNOTE = re.compile(r"^\([a-z]\)$")  # standalone note markers, e.g. "(a)", "(g)"
 BLOCK_TAGS = ["div", "p", "br", "li", "h1", "h2", "h3", "h4"]  # tags that end a paragraph
 # (A|B) matches either phrase. New footer formats can be added with another |
 PAGE_FOOTER = re.compile(
@@ -62,7 +63,7 @@ def clean_row(cells):
 	for c in cells:
 		c = re.sub(r"\(\s+", "(", c.strip())   # "( 321 )" -> "(321)"
 		c = re.sub(r"\s+\)", ")", c)
-		if c in ("", "$"):
+		if c in ("", "$") or FOOTNOTE.match(c):   # footnote markers would shift later columns
 			continue
 		if c in ("%", ")", ")%") and out:
 			out[-1] += c
