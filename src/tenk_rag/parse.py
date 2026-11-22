@@ -19,6 +19,7 @@ NUMBER = re.compile(r"^\(?-?[\d,]*\.?\d+\)?%?$")  # e.g. 6,617 / 39.3% / (321)
 YEAR = re.compile(r"^(19|20)\d{2}$")              # e.g. 2026
 TABLE_MARKER = re.compile(r"\[\[TABLE_(\d+)\]\]")  # placeholder left where a table was
 FOOTNOTE = re.compile(r"^\([a-z]\)$")  # standalone note markers, e.g. "(a)", "(g)"
+UNIT_LABEL = re.compile(r"\b(millions|thousands|billions)\b", re.IGNORECASE)  # e.g. "(Dollars in millions)", "$ in millions"
 BLOCK_TAGS = ["div", "p", "br", "li", "h1", "h2", "h3", "h4"]  # tags that end a paragraph
 # (A|B) matches either phrase. New footer formats can be added with another |
 PAGE_FOOTER = re.compile(
@@ -137,12 +138,29 @@ def table_to_markdown(rows):
 		corner = hr[0]
 		header = hr[1:] + [""] * (n_cols - len(hr[1:]))
 
+	# Header rule 3: a units row like "$ in millions | 2025 | 2024" holds the real column names
+	if (
+		len(rows) > 1
+		and len(rows[0]) > 1
+		and UNIT_LABEL.search(rows[0][0])
+		and looks_like_header(rows[0])
+	):
+		hr = rows.pop(0)
+		values = hr[1:] + [""] * (n_cols - len(hr[1:]))
+		if all(header):   # rule 1 found one name per column, e.g. "Year Ended December"
+			header = [f"{h} {v}".strip() for h, v in zip(header, values)]
+			corner = hr[0]
+		else:   # rule 1 took a table title, e.g. "Table 6 Selected Annual Financial Data"
+			title = " ".join(h for h in header if h)
+			corner = " ".join(x for x in (title, hr[0]) if x)
+			header = values
+
 	# Body: prefix rows with their section so repeated labels stay distinct
 	# e.g. "Products" -> "Cost of sales - Products"
 	body = []
 	section = ""
 	for r in rows:
-		if is_section(r):
+		if len(r) == 1:   # a single-cell row in the body labels the rows below it, with or without ":"
 			section = r[0].rstrip(":")
 			continue
 		label = r[0]

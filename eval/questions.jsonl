@@ -17,3 +17,6 @@
 {"id": "jpm-02", "ticker": "JPM", "category": "lookup", "question": "What was JPMorgan Chase's provision for credit losses in 2024?", "answer": "10,678", "evidence": ["Provision for credit losses", "10,678"]}
 {"id": "jpm-03", "ticker": "JPM", "category": "paraphrase", "question": "How much money did JPMorgan Chase bring in across all of its businesses in 2025?", "answer": "182,447", "evidence": ["Total net revenue", "182,447"]}
 {"id": "jpm-04", "ticker": "JPM", "category": "lookup", "question": "What was JPMorgan Chase's diluted earnings per share in 2025?", "answer": "20.02", "evidence": ["Diluted", "20.02"]}
+{"id": "bac-01", "ticker": "BAC", "category": "lookup", "question": "What was Bank of America's net interest income in 2025?", "answer": "60,096", "evidence": ["Net interest income", "60,096"]}
+{"id": "bac-02", "ticker": "BAC", "category": "lookup", "question": "What was Bank of America's provision for credit losses in 2024?", "answer": "5,821", "evidence": ["Provision for credit losses", "5,821"]}
+{"id": "bac-03", "ticker": "BAC", "category": "paraphrase", "question": "How much profit did Bank of America keep after all costs and taxes in 2023?", "answer": "26,305", "evidence": ["Net income", "26,305"]}
