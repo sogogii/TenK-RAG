@@ -53,6 +53,17 @@ def main():
 	mrr = sum(1 / r for r in ranks if r is not None) / n
 	print(f"MRR@{max_k}  : {mrr:.2f}")
 
+	# Recall@5 by question category and by company
+	for field in ("category", "ticker"):
+		groups = {}
+		for q, r in zip(questions, ranks):
+			# Groups ranks by category (or ticker)
+			groups.setdefault(q[field], []).append(r)
+		print(f"\nRecall@5 by {field}:")
+		for name, rs in sorted(groups.items()):
+			hits = sum(r is not None and r <= 5 for r in rs)
+			print(f"  {name:<12} {hits}/{len(rs)}")
+
 	# Save results so experiments can be compared later
 	name = sys.argv[1] if len(sys.argv) > 1 else "latest"
 	out = PROJECT_ROOT / "experiments" / f"{name}.json"

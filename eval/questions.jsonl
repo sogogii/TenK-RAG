@@ -20,3 +20,6 @@
 {"id": "bac-01", "ticker": "BAC", "category": "lookup", "question": "What was Bank of America's net interest income in 2025?", "answer": "60,096", "evidence": ["Net interest income", "60,096"]}
 {"id": "bac-02", "ticker": "BAC", "category": "lookup", "question": "What was Bank of America's provision for credit losses in 2024?", "answer": "5,821", "evidence": ["Provision for credit losses", "5,821"]}
 {"id": "bac-03", "ticker": "BAC", "category": "paraphrase", "question": "How much profit did Bank of America keep after all costs and taxes in 2023?", "answer": "26,305", "evidence": ["Net income", "26,305"]}
+{"id": "gs-01", "ticker": "GS", "category": "lookup", "question": "How much did Goldman Sachs earn from investment banking in 2024?", "answer": "7,738", "evidence": ["Investment banking", "7,738"]}
+{"id": "gs-02", "ticker": "GS", "category": "lookup", "question": "What was Goldman Sachs's net interest income in 2023?", "answer": "6,351", "evidence": ["Net interest income", "6,351"]}
+{"id": "gs-03", "ticker": "GS", "category": "paraphrase", "question": "How much money did Goldman Sachs bring in across all of its businesses in 2025?", "answer": "58,283", "evidence": ["Net revenues", "58,283"]}
