@@ -1,0 +1,15 @@
+{"id": "aapl-01", "ticker": "AAPL", "category": "lookup", "question": "What were Apple's total net sales in fiscal 2026?", "answer": "478,834", "evidence": ["Total net sales", "478,834"]}
+{"id": "aapl-02", "ticker": "AAPL", "category": "lookup", "question": "What was Apple's diluted earnings per share in fiscal 2025?", "answer": "7.46", "evidence": ["Diluted", "7.46"]}
+{"id": "aapl-03", "ticker": "AAPL", "category": "lookup", "question": "How much did Apple spend on research and development in fiscal 2026?", "answer": "45,765", "evidence": ["Research and development", "45,765"]}
+{"id": "aapl-04", "ticker": "AAPL", "category": "lookup", "question": "What was the gross margin percentage for Services in fiscal 2026?", "answer": "76.2%", "evidence": ["Services", "76.2%"]}
+{"id": "aapl-05", "ticker": "AAPL", "category": "lookup", "question": "What were net sales in Greater China in fiscal 2026?", "answer": "82,378", "evidence": ["China", "82,378"]}
+{"id": "aapl-06", "ticker": "AAPL", "category": "lookup", "question": "What was Apple's net income in fiscal 2026?", "answer": "132,175", "evidence": ["Net income", "132,175"]}
+{"id": "aapl-07", "ticker": "AAPL", "category": "lookup", "question": "What were iPhone net sales in fiscal 2025?", "answer": "209,586", "evidence": ["iPhone", "209,586"]}
+{"id": "aapl-08", "ticker": "AAPL", "category": "lookup", "question": "What was Apple's provision for income taxes in fiscal 2024?", "answer": "29,749", "evidence": ["Provision for income taxes", "29,749"]}
+{"id": "aapl-09", "ticker": "AAPL", "category": "lookup", "question": "What was Apple's operating income in fiscal 2026?", "answer": "158,063", "evidence": ["Operating income", "158,063"]}
+{"id": "aapl-10", "ticker": "AAPL", "category": "paraphrase", "question": "How much profit did Apple keep after all expenses and taxes in fiscal 2026?", "answer": "132,175", "evidence": ["Net income", "132,175"]}
+{"id": "aapl-11", "ticker": "AAPL", "category": "paraphrase", "question": "How much revenue did Apple's services business bring in during fiscal 2026?", "answer": "123,301", "evidence": ["Services", "123,301"]}
+{"id": "aapl-12", "ticker": "AAPL", "category": "paraphrase", "question": "How much did Apple invest in developing new technology and products in fiscal 2026?", "answer": "45,765", "evidence": ["Research and development", "45,765"]}
+{"id": "aapl-13", "ticker": "AAPL", "category": "calculation", "question": "By what percentage did Apple's total net sales grow from fiscal 2025 to fiscal 2026?", "answer": "15%", "evidence": ["478,834", "416,161"]}
+{"id": "aapl-14", "ticker": "AAPL", "category": "no_answer", "question": "How much revenue did Apple earn from self-driving cars in fiscal 2026?", "answer": null, "evidence": []}
+{"id": "aapl-15", "ticker": "AAPL", "category": "no_answer", "question": "What revenue target did Apple set for fiscal 2030?", "answer": null, "evidence": []}

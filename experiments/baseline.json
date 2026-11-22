@@ -1,0 +1,26 @@
+{
+  "name": "baseline",
+  "n_questions": 13,
+  "summary": {
+    "recall@1": 0.15384615384615385,
+    "recall@3": 0.23076923076923078,
+    "recall@5": 0.23076923076923078,
+    "recall@10": 0.6153846153846154,
+    "mrr@10": 0.24847374847374848
+  },
+  "ranks": {
+    "aapl-01": 6,
+    "aapl-02": 7,
+    "aapl-03": null,
+    "aapl-04": 1,
+    "aapl-05": 1,
+    "aapl-06": null,
+    "aapl-07": 7,
+    "aapl-08": 2,
+    "aapl-09": null,
+    "aapl-10": null,
+    "aapl-11": 9,
+    "aapl-12": null,
+    "aapl-13": 6
+  }
+}
