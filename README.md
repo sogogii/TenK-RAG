@@ -68,7 +68,13 @@ python -m tenk_rag.answer AAPL "What was diluted earnings per share in 2025?"
 
 ## Results
 
-_In progress._
+**Hypothesis rejected:** Removing the company name from the BAC query removed name-matching debt chunks
+from the top 5, but the correct tables still ranked outside the top 10.
+The company name adds noise but is not the main cause of BAC misses.
+
+**Energy questions (XOM, CVX):** All evidence strings exist in the chunks, so every miss is a true retrieval failure.
+xom-01 and xom-02 reuse the table's exact row labels but still rank outside the top 50,
+while narrative text about the same topics ranks higher. These are candidates for keyword (BM25) retrieval.
 
 ## Data Notes
 
@@ -81,9 +87,6 @@ _In progress._
 - **Unit labels in header rows:** A header row whose first cell is a unit, like "(MILLIONS) | 2025 | 2024", is parsed as a data row.
 - **Section labels without a closing total:** A section label (e.g. "Denominator:") carries over to later rows when no "Total" row ends the section, producing labels like "Denominator - Diluted earnings per share".
 - **Section labels inside the first row:** When a section label shares a cell with the first item (e.g. "Average shares: Basic"), later rows like "Diluted" don't get the label, so repeated row names stay ambiguous.
-- **Hypothesis rejected:** Removing the company name from the BAC query removed name-matching debt chunks
-  from the top 5, but the correct tables still ranked outside the top 10.
-  The company name adds noise but is not the main cause of BAC misses.
 - **Subtotals inside a section:** A "Total" row closes the current section, so rows after a subtotal (e.g. GS segment "Pre-tax earnings") lose their segment label.
 
 After these fixes, at most 7% of tables per company lack a detected header (see `notebooks/05_parse_check.ipynb`).

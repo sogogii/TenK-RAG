@@ -23,3 +23,9 @@
 {"id": "gs-01", "ticker": "GS", "category": "lookup", "question": "How much did Goldman Sachs earn from investment banking in 2024?", "answer": "7,738", "evidence": ["Investment banking", "7,738"]}
 {"id": "gs-02", "ticker": "GS", "category": "lookup", "question": "What was Goldman Sachs's net interest income in 2023?", "answer": "6,351", "evidence": ["Net interest income", "6,351"]}
 {"id": "gs-03", "ticker": "GS", "category": "paraphrase", "question": "How much money did Goldman Sachs bring in across all of its businesses in 2025?", "answer": "58,283", "evidence": ["Net revenues", "58,283"]}
+{"id": "xom-01", "ticker": "XOM", "category": "lookup", "question": "What were ExxonMobil's sales and other operating revenue in 2024?", "answer": "339,247", "evidence": ["Sales and other operating revenue", "339,247"]}
+{"id": "xom-02", "ticker": "XOM", "category": "lookup", "question": "How much did ExxonMobil spend on research and development in 2025?", "answer": "1,228", "evidence": ["Research and development", "1,228"]}
+{"id": "xom-03", "ticker": "XOM", "category": "paraphrase", "question": "How much profit did ExxonMobil earn for its shareholders after all costs and taxes in 2025?", "answer": "28,844", "evidence": ["Net income", "28,844"]}
+{"id": "cvx-01", "ticker": "CVX", "category": "lookup", "question": "What were Chevron's sales and other operating revenues in 2025?", "answer": "184,432", "evidence": ["Sales and Other Operating Revenues", "184,432"]}
+{"id": "cvx-02", "ticker": "CVX", "category": "lookup", "question": "What were Chevron's total upstream earnings in 2024?", "answer": "18,602", "evidence": ["Total Upstream", "18,602"]}
+{"id": "cvx-03", "ticker": "CVX", "category": "paraphrase", "question": "How much profit did Chevron earn for its shareholders after all costs and taxes in 2025?", "answer": "12,299", "evidence": ["Net Income", "12,299"]}
