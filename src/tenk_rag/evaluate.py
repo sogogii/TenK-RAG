@@ -7,7 +7,7 @@ from tenk_rag.config import PROJECT_ROOT
 from tenk_rag.search import Searcher
 
 EVAL_PATH = PROJECT_ROOT / "eval" / "questions.jsonl"
-K_VALUES = (1, 3, 5, 10)
+K_VALUES = (1, 3, 5, 10, 50)
 
 
 def load_questions(path=EVAL_PATH):
@@ -58,7 +58,7 @@ def main():
 	out = PROJECT_ROOT / "experiments" / f"{name}.json"
 	out.parent.mkdir(exist_ok=True)
 	summary = {f"recall@{k}": sum(r is not None and r <= k for r in ranks) / n for k in K_VALUES}
-	summary["mrr@10"] = mrr
+	summary[f"mrr@{max_k}"] = mrr
 	record = {
 		"name": name,
 		"n_questions": n,

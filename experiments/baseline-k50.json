@@ -1,0 +1,34 @@
+{
+  "name": "baseline-k50",
+  "n_questions": 20,
+  "summary": {
+    "recall@1": 0.1,
+    "recall@3": 0.25,
+    "recall@5": 0.3,
+    "recall@10": 0.6,
+    "recall@50": 0.9,
+    "mrr@50": 0.23943863400641247
+  },
+  "ranks": {
+    "aapl-01": 6,
+    "aapl-02": 7,
+    "aapl-03": 26,
+    "aapl-04": 1,
+    "aapl-05": 1,
+    "aapl-06": null,
+    "aapl-07": 7,
+    "aapl-08": 2,
+    "aapl-09": 16,
+    "aapl-10": 43,
+    "aapl-11": 9,
+    "aapl-12": null,
+    "aapl-13": 6,
+    "jpm-01": 4,
+    "jpm-02": 2,
+    "jpm-03": 10,
+    "jpm-04": 2,
+    "bac-01": 36,
+    "bac-02": 33,
+    "bac-03": 38
+  }
+}
