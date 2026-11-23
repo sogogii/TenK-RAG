@@ -12,3 +12,4 @@ EMBED_META_PATH = DATA_DIR / "embeddings_meta.json"
 # Chunks sizes depends on this model's tokenizer, so changing it means re-chunking
 EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 LLM_MODEL = "claude-haiku-5-5"
+RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"

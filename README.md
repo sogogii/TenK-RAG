@@ -95,6 +95,20 @@ Baseline: `all-MiniLM-L6-v2` embeddings, 150-word text chunks, token-limited tab
 - _Truncation:_ Measuring table chunks in model tokens cut tables over the 256-token limit from 36% to 5%, but retrieval barely changed.
 - _Company name in the query:_ Removing "Bank of America" from a BAC query removed name-matching chunks, but the correct tables still ranked outside the top 10.
 
+### Experiment 1: Cross-Encoder Reranking
+
+Rerank the top 50 embedding results with `cross-encoder/ms-marco-MiniLM-L-6-v2`. 41 questions.
+
+| Metric    | Baseline | + Rerank |
+| --------- | -------- | -------- |
+| Recall@1  | 0.12     | 0.15     |
+| Recall@5  | 0.24     | 0.39     |
+| Recall@10 | 0.46     | 0.54     |
+| Recall@50 | 0.78     | 0.78     |
+| MRR@50    | 0.22     | 0.28     |
+
+20 questions improved and 8 got worse. The gain came from lookup questions (10/28 → 15/28 in the top 5); paraphrased questions stayed at 0/12. The reranker matches shared words in context well but cannot link a paraphrase like "profit kept after all costs and taxes" to the row label "Net income".
+
 ## Data Notes
 
 - **XOM:** The ticker now maps to ExxonMobil Holdings Corp (CIK 2115436), which has not filed a 10-K yet. The latest 10-K is retrieved from the prior registrant, Exxon Mobil Corp (CIK 34088).
