@@ -32,3 +32,12 @@
 {"id": "msft-01", "ticker": "MSFT", "category": "lookup", "question": "What was Microsoft's total revenue in fiscal 2025?", "answer": "281,724", "evidence": ["Total revenue", "281,724"]}
 {"id": "msft-02", "ticker": "MSFT", "category": "lookup", "question": "What was Microsoft's operating income in fiscal 2026?", "answer": "155,237", "evidence": ["Operating income", "155,237"]}
 {"id": "msft-03", "ticker": "MSFT", "category": "paraphrase", "question": "How much did Microsoft invest in developing new technology and products in fiscal 2024?", "answer": "29,510", "evidence": ["Research and development", "29,510"]}
+{"id": "nvda-01", "ticker": "NVDA", "category": "lookup", "question": "What was NVIDIA's revenue in fiscal 2024?", "answer": "60,922", "evidence": ["Revenue", "60,922"]}
+{"id": "nvda-02", "ticker": "NVDA", "category": "lookup", "question": "What was NVIDIA's gross profit in fiscal 2025?", "answer": "97,858", "evidence": ["Gross profit", "97,858"]}
+{"id": "nvda-03", "ticker": "NVDA", "category": "paraphrase", "question": "How much did NVIDIA earn after paying all its costs and taxes in fiscal 2026?", "answer": "120,067", "evidence": ["Net income", "120,067"]}
+{"id": "googl-01", "ticker": "GOOGL", "category": "lookup", "question": "What was Google Cloud revenue in 2025?", "answer": "58,705", "evidence": ["Google Cloud", "58,705"]}
+{"id": "googl-02", "ticker": "GOOGL", "category": "lookup", "question": "How much revenue did YouTube ads generate for Alphabet in 2024?", "answer": "36,147", "evidence": ["YouTube ads", "36,147"]}
+{"id": "googl-03", "ticker": "GOOGL", "category": "paraphrase", "question": "What was Alphabet's bottom-line profit for 2025?", "answer": "132,170", "evidence": ["Net income", "132,170"]}
+{"id": "amzn-01", "ticker": "AMZN", "category": "lookup", "question": "What were AWS net sales in 2025?", "answer": "128,725", "evidence": ["AWS", "128,725"]}
+{"id": "amzn-02", "ticker": "AMZN", "category": "lookup", "question": "What were Amazon's fulfillment expenses in 2024?", "answer": "98,505", "evidence": ["Fulfillment", "98,505"]}
+{"id": "amzn-03", "ticker": "AMZN", "category": "paraphrase", "question": "How much did Amazon sell in total across all of its businesses in 2025?", "answer": "716,924", "evidence": ["Net sales", "716,924"]}
