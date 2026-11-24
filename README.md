@@ -95,19 +95,19 @@ Baseline: `all-MiniLM-L6-v2` embeddings, 150-word text chunks, token-limited tab
 - _Truncation:_ Measuring table chunks in model tokens cut tables over the 256-token limit from 36% to 5%, but retrieval barely changed.
 - _Company name in the query:_ Removing "Bank of America" from a BAC query removed name-matching chunks, but the correct tables still ranked outside the top 10.
 
-### Experiment 1: Cross-Encoder Reranking
-
-Rerank the top 50 embedding results with `cross-encoder/ms-marco-MiniLM-L-6-v2`. 41 questions.
+### Experiment 1: Cross-Encoder Reranking (71 questions, 20 companies)
 
 | Metric    | Baseline | + Rerank |
 | --------- | -------- | -------- |
-| Recall@1  | 0.12     | 0.15     |
-| Recall@5  | 0.24     | 0.39     |
-| Recall@10 | 0.46     | 0.54     |
-| Recall@50 | 0.78     | 0.78     |
-| MRR@50    | 0.22     | 0.28     |
+| Recall@1  | 0.14     | 0.18     |
+| Recall@5  | 0.35     | 0.44     |
+| Recall@10 | 0.55     | 0.59     |
+| Recall@50 | 0.83     | 0.83     |
+| MRR@50    | 0.26     | 0.31     |
 
-20 questions improved and 8 got worse. The gain came from lookup questions (10/28 → 15/28 in the top 5); paraphrased questions stayed at 0/12. The reranker matches shared words in context well but cannot link a paraphrase like "profit kept after all costs and taxes" to the row label "Net income".
+Reranking improved 30 questions and hurt 19. The gain was uneven: on the first 41 questions Recall@5 rose from 10 to 16 hits, but on the 30 questions added later it stayed at 15, with 10 improved and 11 worse. An early 41-question run overstated the effect by almost half.
+
+Paraphrased questions reached 4/22 in the top 5. Results depend on wording: "advertising and marketing" found Nike's "Demand creation expense" at rank 2, while "profit kept after all costs and taxes" failed across several companies.
 
 ## Data Notes
 
