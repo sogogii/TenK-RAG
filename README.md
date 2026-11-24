@@ -121,6 +121,10 @@ Rerank the top 50 embedding results with `cross-encoder/ms-marco-MiniLM-L-6-v2`.
 - **Section labels without a closing total:** A section label (e.g. "Denominator:") carries over to later rows when no "Total" row ends the section, producing labels like "Denominator - Diluted earnings per share".
 - **Section labels inside the first row:** When a section label shares a cell with the first item (e.g. "Average shares: Basic"), later rows like "Diluted" don't get the label, so repeated row names stay ambiguous.
 - **Subtotals inside a section:** A "Total" row closes the current section, so rows after a subtotal (e.g. GS segment "Pre-tax earnings") lose their segment label.
+- **Header shifted by a split column:** When one header cell spans two data columns (e.g. UNH's "Change 2025 vs. 2024" over a $ and a % column), the header is padded from the left and every year label shifts one column, so values sit under the wrong year.
+- **Rows with empty cells shift left:** Empty cells are dropped and short rows are padded on the right, so in tables with interleaved columns (e.g. NKE's "FISCAL 2025 | % CHANGE | FISCAL 2024"), a row without change values puts its 2024 figure under "% CHANGE".
+- **Numeric footnotes and split negatives:** Numeric footnote markers (e.g. CAT's superscript 1, 2) are kept as values and shift later columns, and negative percentages split across cells (e.g. "(2" and "%)") are not rejoined.
+- **Rows without a label:** A subtotal row with no label (e.g. BA's gross profit line) uses its first value as the label, shifting the remaining values one column left.
 
 After these fixes, at most 7% of tables per company lack a detected header (see `notebooks/05_parse_check.ipynb`).
 

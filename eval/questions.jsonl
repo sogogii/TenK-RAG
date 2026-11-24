@@ -41,3 +41,33 @@
 {"id": "amzn-01", "ticker": "AMZN", "category": "lookup", "question": "What were AWS net sales in 2025?", "answer": "128,725", "evidence": ["AWS", "128,725"]}
 {"id": "amzn-02", "ticker": "AMZN", "category": "lookup", "question": "What were Amazon's fulfillment expenses in 2024?", "answer": "98,505", "evidence": ["Fulfillment", "98,505"]}
 {"id": "amzn-03", "ticker": "AMZN", "category": "paraphrase", "question": "How much did Amazon sell in total across all of its businesses in 2025?", "answer": "716,924", "evidence": ["Net sales", "716,924"]}
+{"id": "jnj-01", "ticker": "JNJ", "category": "lookup", "question": "What were Johnson & Johnson's sales to customers in 2024?", "answer": "88,821", "evidence": ["Sales to customers", "88,821"]}
+{"id": "jnj-02", "ticker": "JNJ", "category": "lookup", "question": "What was Johnson & Johnson's research and development expense in 2023?", "answer": "15,085", "evidence": ["Research and development", "15,085"]}
+{"id": "jnj-03", "ticker": "JNJ", "category": "paraphrase", "question": "How much profit did Johnson & Johnson make from its ongoing businesses after taxes in 2025?", "answer": "26,804", "evidence": ["Net earnings", "26,804"]}
+{"id": "pfe-01", "ticker": "PFE", "category": "lookup", "question": "What were Pfizer's total revenues in 2024?", "answer": "63,627", "evidence": ["Total revenues", "63,627"]}
+{"id": "pfe-02", "ticker": "PFE", "category": "lookup", "question": "What were Pfizer's total revenues in the U.S. in 2025?", "answer": "37,078", "evidence": ["Total revenues", "37,078"]}
+{"id": "pfe-03", "ticker": "PFE", "category": "paraphrase", "question": "How much did Pfizer's prescription medicines business bring in during 2025?", "answer": "61,199", "evidence": ["Biopharma", "61,199"]}
+{"id": "unh-01", "ticker": "UNH", "category": "lookup", "question": "What were UnitedHealth Group's total revenues in 2023?", "answer": "371,622", "evidence": ["Total revenues", "371,622"]}
+{"id": "unh-02", "ticker": "UNH", "category": "lookup", "question": "What were UnitedHealth Group's medical costs in 2025?", "answer": "313,995", "evidence": ["Medical costs", "313,995"]}
+{"id": "unh-03", "ticker": "UNH", "category": "paraphrase", "question": "How much did UnitedHealth Group pay for its members' health care in 2024?", "answer": "264,185", "evidence": ["Medical costs", "264,185"]}
+{"id": "ko-01", "ticker": "KO", "category": "lookup", "question": "What were Coca-Cola's net operating revenues in 2023?", "answer": "45,754", "evidence": ["Net operating revenues", "45,754"]}
+{"id": "ko-02", "ticker": "KO", "category": "lookup", "question": "What was Coca-Cola's operating income in 2024?", "answer": "9,992", "evidence": ["Operating income", "9,992"]}
+{"id": "ko-03", "ticker": "KO", "category": "paraphrase", "question": "What was Coca-Cola's total profit for 2025 after taxes?", "answer": "13,137", "evidence": ["Net income", "13,137"]}
+{"id": "pg-01", "ticker": "PG", "category": "lookup", "question": "What were Procter & Gamble's net sales in fiscal 2025?", "answer": "84,284", "evidence": ["Net sales", "84,284"]}
+{"id": "pg-02", "ticker": "PG", "category": "lookup", "question": "What were Procter & Gamble's diluted net earnings per common share in fiscal 2026?", "answer": "6.62", "evidence": ["Diluted net earnings per common share", "6.62"]}
+{"id": "pg-03", "ticker": "PG", "category": "paraphrase", "question": "How much profit did Procter & Gamble make from running its business in fiscal 2026, before interest and taxes?", "answer": "19,748", "evidence": ["Operating income", "19,748"]}
+{"id": "wmt-01", "ticker": "WMT", "category": "lookup", "question": "What were Walmart's total revenues in fiscal 2024?", "answer": "648,125", "evidence": ["Total revenues", "648,125"]}
+{"id": "wmt-02", "ticker": "WMT", "category": "lookup", "question": "How much membership and other income did Walmart earn in fiscal 2026?", "answer": "6,750", "evidence": ["Membership and other income", "6,750"]}
+{"id": "wmt-03", "ticker": "WMT", "category": "paraphrase", "question": "How much did Walmart earn after covering all of its expenses in fiscal 2025?", "answer": "20,157", "evidence": ["Net income", "20,157"]}
+{"id": "nke-01", "ticker": "NKE", "category": "lookup", "question": "What were Nike's revenues in fiscal 2024?", "answer": "51,362", "evidence": ["Revenues", "51,362"]}
+{"id": "nke-02", "ticker": "NKE", "category": "lookup", "question": "What was Nike's cost of sales in fiscal 2025?", "answer": "26,519", "evidence": ["Cost of sales", "26,519"]}
+{"id": "nke-03", "ticker": "NKE", "category": "paraphrase", "question": "How much did Nike spend on advertising and marketing in fiscal 2026?", "answer": "4,754", "evidence": ["Demand creation expense", "4,754"]}
+{"id": "v-01", "ticker": "V", "category": "lookup", "question": "What was Visa's net revenue in fiscal 2024?", "answer": "35,926", "evidence": ["Net revenue", "35,926"]}
+{"id": "v-02", "ticker": "V", "category": "lookup", "question": "How much international net revenue did Visa earn in fiscal 2026?", "answer": "28,480", "evidence": ["International", "28,480"]}
+{"id": "v-03", "ticker": "V", "category": "paraphrase", "question": "How much revenue did Visa earn from its home country in fiscal 2026?", "answer": "17,423", "evidence": ["U.S.", "17,423"]}
+{"id": "cat-01", "ticker": "CAT", "category": "lookup", "question": "What were Caterpillar's total sales and revenues in 2024?", "answer": "64,809", "evidence": ["Total sales and revenues", "64,809"]}
+{"id": "cat-02", "ticker": "CAT", "category": "lookup", "question": "What were Caterpillar's research and development expenses in 2025?", "answer": "2,148", "evidence": ["Research and development", "2,148"]}
+{"id": "cat-03", "ticker": "CAT", "category": "paraphrase", "question": "What were Caterpillar's earnings from its core operations in 2025?", "answer": "11,151", "evidence": ["Operating profit", "11,151"]}
+{"id": "ba-01", "ticker": "BA", "category": "lookup", "question": "What were Boeing's total revenues in 2024?", "answer": "66,517", "evidence": ["Total revenues", "66,517"]}
+{"id": "ba-02", "ticker": "BA", "category": "lookup", "question": "What were Boeing's Commercial Airplanes revenues in 2023?", "answer": "33,901", "evidence": ["Commercial Airplanes", "33,901"]}
+{"id": "ba-03", "ticker": "BA", "category": "paraphrase", "question": "How much did Boeing spend developing new aircraft and technology in 2025?", "answer": "(3,615)", "evidence": ["Research and development", "(3,615)"]}
