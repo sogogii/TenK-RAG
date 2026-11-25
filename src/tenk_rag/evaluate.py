@@ -6,6 +6,7 @@ import sys
 from tenk_rag.config import PROJECT_ROOT
 from tenk_rag.search import Searcher
 from tenk_rag.rerank import Reranker
+from tenk_rag.rewrite import Rewriter
 
 EVAL_PATH = PROJECT_ROOT / "eval" / "questions.jsonl"
 K_VALUES = (1, 3, 5, 10, 50)
@@ -35,19 +36,22 @@ def main():
 	args = [a for a in sys.argv[1:] if not a.startswith("--")]
 	name = args[0] if args else "latest"
 	use_rerank = "--rerank" in sys.argv
+	use_rewrite = "--rewrite" in sys.argv
 
 	# No-answer questions have nothing to retrieve; they are scored later on the LLM's answer
 	questions = [q for q in load_questions() if q["evidence"]]
 	searcher = Searcher()
 	reranker = Reranker() if use_rerank else None
+	rewriter = Rewriter() if use_rewrite else None
 	# Retrieves 10 even though the system uses 5, to tell near misses apart from comlete misses
 	max_k = max(K_VALUES)
 
 	ranks = []
 	for q in questions:
-		results = searcher.search(q["question"], q["ticker"], k=max_k)
+		query = rewriter.rewrite(q["question"]) if rewriter else q["question"]
+		results = searcher.search(query, q["ticker"], k=max_k)
 		if reranker:
-			results = reranker.rerank(q["question"], results)   # reorder the top 50
+			results = reranker.rerank(query, results)   # reorder the top 50
 		rank = first_hit_rank(results, q["evidence"])
 		ranks.append(rank)
 		shown = "miss" if rank is None else rank
@@ -81,6 +85,7 @@ def main():
 	record = {
 		"name": name,
 		"rerank": use_rerank,
+		"rewrite": use_rewrite,
 		"n_questions": n,
 		"summary": summary,
 		"ranks": {q["id"]: r for q, r in zip(questions, ranks)},

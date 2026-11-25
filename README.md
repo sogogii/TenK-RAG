@@ -109,6 +109,41 @@ Reranking improved 30 questions and hurt 19. The gain was uneven: on the first 4
 
 Paraphrased questions reached 4/22 in the top 5. Results depend on wording: "advertising and marketing" found Nike's "Demand creation expense" at rank 2, while "profit kept after all costs and taxes" failed across several companies.
 
+### Experiment 2: Query Rewriting
+
+Claude Haiku rewrites each question into the standard line-item terms used in
+financial statements (e.g., "profit after all expenses and taxes" → "net income").
+Rewrites are cached in `eval/rewrites.json` so runs are reproducible.
+31 of 71 questions changed: all 22 paraphrases and 9 lookups.
+
+| Setting                | R@1  | R@5  | R@10 | R@50 | MRR@50 | Lookup R@5 | Paraphrase R@5 |
+| ---------------------- | ---- | ---- | ---- | ---- | ------ | ---------- | -------------- |
+| Baseline               | 0.14 | 0.35 | 0.55 | 0.83 | 0.26   | 21/48      | 4/22           |
+| Rewrite only           | 0.17 | 0.38 | 0.52 | 0.87 | 0.29   | 20/48      | 7/22           |
+| Rerank only            | 0.18 | 0.44 | 0.59 | 0.83 | 0.31   | 26/48      | 4/22           |
+| Rewrite at rerank only | 0.24 | 0.56 | 0.69 | 0.83 | 0.39   | 26/48      | 13/22          |
+| Rewrite + rerank       | 0.24 | 0.56 | 0.70 | 0.87 | 0.39   | 25/48      | 14/22          |
+
+**Findings**
+
+- Rewriting and reranking work together. Rewriting alone adds 0.03 to Recall@5
+  and reranking alone adds 0.09, but both together add 0.21. The cross-encoder
+  reads the query and chunk side by side, so matching the table's exact
+  line-item name helps it much more than it helps the bi-encoder.
+- Rewriting at search time is what raises Recall@50 (0.83 → 0.87). Four
+  questions entered the top 50, which reranking alone can never do, and two of
+  them then reached the top 3 after reranking (aapl-12, ba-03).
+- Paraphrase Recall@5 went from 4/22 to 14/22. The rewriter even used
+  company-specific terms, such as Nike's "demand creation expense".
+- The cost falls on lookups (26 → 25). gs-01 dropped from rank 1 to outside the
+  top 50 because the rewrite changed "How much did Goldman Sachs earn from investment banking in 2024?" to "What were Goldman Sachs' investment banking fees in 2024?". jnj-01 ("sales to customers" → "net sales") kept rank 1.
+- 7 of the 9 questions still outside the top 50 are lookups that already use
+  standard terms, so rewriting cannot fix them. These motivate Experiment 3
+  (hybrid BM25).
+- The "rewrite at rerank only" row came from a bug where search used the
+  original question. It turned out to be a useful variant: almost the same
+  Recall@5, but without the Recall@50 gain.
+
 ## Data Notes
 
 - **XOM:** The ticker now maps to ExxonMobil Holdings Corp (CIK 2115436), which has not filed a 10-K yet. The latest 10-K is retrieved from the prior registrant, Exxon Mobil Corp (CIK 34088).
@@ -131,8 +166,8 @@ After these fixes, at most 7% of tables per company lack a detected header (see 
 ## Roadmap
 
 - [x] Week 1: Environment setup, data collection pipeline
-- [ ] Week 2: End-to-end baseline RAG with citations
-- [ ] Week 3: Evaluation framework and baseline scores
-- [ ] Week 4: Comparative experiments
+- [x] Week 2: End-to-end baseline RAG with citations
+- [x] Week 3: Evaluation framework and baseline scores
+- [x] Week 4: Comparative experiments
 - [ ] Week 5: Embedding fine-tuning and final configuration
 - [ ] Week 6: Demo deployment and technical report
