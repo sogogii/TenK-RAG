@@ -181,6 +181,13 @@ Fusion (score = sum of 1 / (60 + rank)).
   only 42. The remaining problem is mostly ranking, so a stronger reranker is
   the next step.
 
+### Remaining Failures
+
+The two questions still outside the top 50 (xom-02, msft-03) are both R&D
+lookups whose answer is one row inside a multi-topic table (a financial summary
+and an income statement). Parsing and labels are correct; the row is buried by
+the table's other topics. See `notebooks/09_failure_check.ipynb`.
+
 ## Data Notes
 
 - **XOM:** The ticker now maps to ExxonMobil Holdings Corp (CIK 2115436), which has not filed a 10-K yet. The latest 10-K is retrieved from the prior registrant, Exxon Mobil Corp (CIK 34088).
@@ -199,6 +206,27 @@ Fusion (score = sum of 1 / (60 + rank)).
 - **Rows without a label:** A subtotal row with no label (e.g. BA's gross profit line) uses its first value as the label, shifting the remaining values one column left.
 
 After these fixes, at most 7% of tables per company lack a detected header (see `notebooks/05_parse_check.ipynb`).
+
+## Conclusion
+
+Hypotheses 1, 3, and 4 are rejected: both gold chunks are correctly parsed
+tables with one gold chunk each. Hypothesis 2 is the cause.
+
+- **Multi-topic tables.** In both gold chunks, R&D is one row among about ten
+  unrelated rows (XOM: a financial summary with assets and debt; MSFT: the
+  income statement). The dense vector represents the table's overall topic, not
+  the R&D row (dense rank 112–198).
+- **BM25 just misses the cutoff.** BM25 ranks are 42–58. Number-heavy tables
+  look long to BM25 (the tokenizer splits "31,476" into two tokens), and long
+  documents get lower scores.
+- **RRF favors chunks found by both searchers.** msft-03 entered the BM25 top 50
+  (rank 45) but not the dense top 50, so its fused score (1/105) lost to chunks
+  ranked ~80 in both lists (2/140).
+- **The rewrite hurt BM25 for xom-02** (42 → 58). It added "expense", a common
+  word in the filing, while the table says "costs".
+
+Possible fix: index each table row separately with its header and context.
+Not applied now, to avoid tuning the system to two questions.
 
 ## Roadmap
 
