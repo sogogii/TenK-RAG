@@ -144,6 +144,43 @@ Rewrites are cached in `eval/rewrites.json` so runs are reproducible.
   original question. It turned out to be a useful variant: almost the same
   Recall@5, but without the Recall@50 gain.
 
+  ### Experiment 3: Hybrid Search (BM25 + Dense)
+
+BM25 keyword search is built per company with `rank-bm25`. Hybrid search takes
+the top 50 from dense and BM25 search and merges them with Reciprocal Rank
+Fusion (score = sum of 1 / (60 + rank)).
+
+| Setting                       | R@1      | R@3      | R@5      | R@10     | R@50     | MRR@50   |
+| ----------------------------- | -------- | -------- | -------- | -------- | -------- | -------- |
+| Dense (baseline)              | 0.14     | 0.32     | 0.35     | 0.55     | 0.83     | 0.26     |
+| BM25                          | 0.13     | 0.25     | 0.35     | 0.54     | 0.79     | 0.24     |
+| Hybrid                        | 0.20     | 0.34     | 0.42     | 0.55     | 0.89     | 0.31     |
+| Hybrid + rerank               | 0.20     | 0.35     | 0.46     | 0.62     | 0.89     | 0.33     |
+| Dense + rewrite + rerank      | 0.24     | 0.46     | 0.56     | 0.70     | 0.87     | 0.39     |
+| **Hybrid + rewrite + rerank** | **0.25** | **0.48** | **0.59** | **0.77** | **0.97** | **0.42** |
+
+**Predictions (written before running)**
+
+- BM25 will be weak on paraphrases. ✅ Without rewriting, hybrid hurt most
+  paraphrases (e.g., cat-03 18 → 36, pfe-03 50 → miss).
+- Hybrid will raise Recall@50 and recover exact-term lookups like amzn-02. ✅
+- BM25 will not help aapl-06 ("net income"), since the term appears everywhere.
+  ❌ It moved from outside the top 50 to rank 21.
+
+**Findings**
+
+- BM25 alone matches dense search on Recall@5 (0.35), but they find different
+  questions: hybrid Recall@50 (0.89) is higher than either one.
+- The three methods cover each other's weaknesses. Rewriting turns paraphrases
+  into exact terms, BM25 finds tables by those terms, and reranking orders the
+  larger pool. Adding hybrid to the best Experiment 2 setting gave 14 better and
+  7 worse; every loss was 1–2 ranks.
+- Questions outside the top 50 dropped from 9 to 2 (xom-02, msft-03). gs-01,
+  lost in Experiment 2, came back (miss → 6).
+- The answer is now in the top 50 for 69 of 71 questions, but in the top 5 for
+  only 42. The remaining problem is mostly ranking, so a stronger reranker is
+  the next step.
+
 ## Data Notes
 
 - **XOM:** The ticker now maps to ExxonMobil Holdings Corp (CIK 2115436), which has not filed a 10-K yet. The latest 10-K is retrieved from the prior registrant, Exxon Mobil Corp (CIK 34088).

@@ -7,6 +7,9 @@ from tenk_rag.config import PROJECT_ROOT
 from tenk_rag.search import Searcher
 from tenk_rag.rerank import Reranker
 from tenk_rag.rewrite import Rewriter
+from tenk_rag.bm25 import BM25Searcher
+from tenk_rag.embed import load_chunks
+from tenk_rag.hybrid import HybridSearcher
 
 EVAL_PATH = PROJECT_ROOT / "eval" / "questions.jsonl"
 K_VALUES = (1, 3, 5, 10, 50)
@@ -40,7 +43,18 @@ def main():
 
 	# No-answer questions have nothing to retrieve; they are scored later on the LLM's answer
 	questions = [q for q in load_questions() if q["evidence"]]
-	searcher = Searcher()
+
+	# Picks the searcher by flag and records it in 'mode'
+	if "--hybrid" in sys.argv:
+		mode = "hybrid"
+		searcher = HybridSearcher()
+	elif "--bm25" in sys.argv:
+		mode = "bm25"
+		searcher = BM25Searcher(load_chunks())
+	else:
+		mode = "dense"
+		searcher = Searcher()
+
 	reranker = Reranker() if use_rerank else None
 	rewriter = Rewriter() if use_rewrite else None
 	# Retrieves 10 even though the system uses 5, to tell near misses apart from comlete misses
