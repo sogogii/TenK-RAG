@@ -9,10 +9,10 @@ from tenk_rag.embed import pick_device
 class Reranker:
     """Scores each (question, chunk) pair together and reorders the results."""
 
-    def __init__(self):
+    def __init__(self, model_name=RERANK_MODEL):
         # Reads the question and chunk together as one input, so it can catch
         # fine-grained matches that separate embedding miss
-        self.model = CrossEncoder(RERANK_MODEL, device=pick_device())
+        self.model = CrossEncoder(model_name, device=pick_device(), max_length=512)
 
     def rerank(self, query, results):
         """Reorder (chunk, score) pairs by cross-encoder relevance, best first."""

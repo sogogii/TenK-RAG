@@ -2,8 +2,9 @@
 
 import json
 import sys
+import time
 
-from tenk_rag.config import PROJECT_ROOT
+from tenk_rag.config import PROJECT_ROOT, RERANK_MODEL, RERANK_MODELS
 from tenk_rag.search import Searcher
 from tenk_rag.rerank import Reranker
 from tenk_rag.rewrite import Rewriter
@@ -38,7 +39,13 @@ def first_hit_rank(results, evidence):
 def main():
 	args = [a for a in sys.argv[1:] if not a.startswith("--")]
 	name = args[0] if args else "latest"
-	use_rerank = "--rerank" in sys.argv
+
+	# --rerank=bge picks a model; --rerank alone uses the default
+	reranker_key = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--reranker=")), None)
+	use_rerank = "--rerank" in sys.argv or reranker_key is not None
+	rerank_model = RERANK_MODELS[reranker_key] if reranker_key else RERANK_MODEL
+	reranker = Reranker(rerank_model) if use_rerank else None
+
 	use_rewrite = "--rewrite" in sys.argv
 
 	# No-answer questions have nothing to retrieve; they are scored later on the LLM's answer
@@ -55,12 +62,12 @@ def main():
 		mode = "dense"
 		searcher = Searcher()
 
-	reranker = Reranker() if use_rerank else None
 	rewriter = Rewriter() if use_rewrite else None
 	# Retrieves 10 even though the system uses 5, to tell near misses apart from comlete misses
 	max_k = max(K_VALUES)
 
 	ranks = []
+	start = time.perf_counter()
 	for q in questions:
 		query = rewriter.rewrite(q["question"]) if rewriter else q["question"]
 		results = searcher.search(query, q["ticker"], k=max_k)
@@ -70,6 +77,9 @@ def main():
 		ranks.append(rank)
 		shown = "miss" if rank is None else rank
 		print(f"{q['id']:<9} {q['category']:<12} {shown:>4}  {q['question'][:60]}")
+
+	seconds = time.perf_counter() - start
+	print(f"\nTime: {seconds:.1f}s ({seconds / len(questions):.2f}s per question)")
 
 	n = len(ranks)
 	print(f"\n{n} questions")
@@ -103,6 +113,8 @@ def main():
 		"n_questions": n,
 		"summary": summary,
 		"ranks": {q["id"]: r for q, r in zip(questions, ranks)},
+		"reranker": rerank_model if use_rerank else None,
+		"seconds": round(seconds, 1),
 	}
 	out.write_text(json.dumps(record, indent=2))
 	print(f"\nSaved to {out.relative_to(PROJECT_ROOT)}")

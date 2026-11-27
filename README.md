@@ -181,6 +181,36 @@ Fusion (score = sum of 1 / (60 + rank)).
   only 42. The remaining problem is mostly ranking, so a stronger reranker is
   the next step.
 
+### Experiment 4: Reranker Models
+
+All runs use hybrid search + query rewriting and rerank the top 50 candidates.
+Rerankers run with max_length=512 on a MacBook Air (M-series, 8GB, MPS).
+Earlier experiments used MiniLM-L6.
+
+| Reranker                | Params | R@1      | R@3      | R@5      | R@10     | MRR@50   | Time / question |
+| ----------------------- | ------ | -------- | -------- | -------- | -------- | -------- | --------------- |
+| ms-marco-MiniLM-L-6-v2  | 22M    | 0.25     | 0.48     | 0.59     | 0.77     | 0.42     | 0.35s           |
+| ms-marco-MiniLM-L-12-v2 | 33M    | 0.23     | 0.51     | 0.61     | 0.80     | 0.41     | 0.55s           |
+| bge-reranker-base       | 278M   | 0.28     | 0.61     | 0.70     | 0.86     | 0.47     | 2.0s            |
+| **bge-reranker-v2-m3**  | 568M   | **0.52** | **0.72** | **0.83** | **0.93** | **0.65** | 8.3s            |
+
+Recall@50 is 0.97 for all runs, since reranking only reorders candidates.
+
+**Prediction (written before running):** bge models are trained for web search,
+so gains may be smaller than their size suggests. ❌ bge-reranker-v2-m3 gave
+the largest gain of any experiment.
+
+**Findings**
+
+- Making the same model deeper did not help. MiniLM-L12 vs L6 gave 17 better
+  and 18 worse; the +0.02 Recall@5 is 1–2 questions, within noise.
+- bge-reranker-v2-m3 doubled Recall@1 (0.25 → 0.52) and raised Recall@5 to
+  0.83 (41 better, 5 worse; every loss was 1–2 ranks). Gains came from the
+  model family and training, not from depth alone.
+- The cost is speed: 24x slower than MiniLM-L6 on a laptop. bge-reranker-base
+  is a middle option (R@5 0.70 at 2.0s per question).
+- bge-reranker-v2-m3 is now the default reranker.
+
 ### Remaining Failures
 
 The two questions still outside the top 50 (xom-02, msft-03) are both R&D
